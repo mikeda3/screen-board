@@ -1,0 +1,1474 @@
+<title>__TITLE__</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+  :root {
+    --ground: #edeff3;
+    --plate: #ffffff;
+    --plate-sunk: #f5f6f9;
+    --ink: #14181d;
+    --muted: #5b6472;
+    --line: #d6dbe3;
+    --line-soft: #e4e8ee;
+    --accent: #0069f1;
+    --accent-soft: #e4effd;
+    --done: #0f7a55;
+    --done-soft: #e2f2ea;
+    --flag: #b4531a;
+    --flag-soft: #fbeee4;
+    --pen: #e11d48;
+    --pen-soft: #fdeaee;
+    --shadow: 0 1px 2px rgb(20 24 29 / 8%), 0 8px 24px rgb(20 24 29 / 6%);
+    --display: 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', system-ui, sans-serif;
+    --body: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+  }
+
+  :root:not([data-theme='light']) {
+    @media (prefers-color-scheme: dark) {
+      --ground: #14171c;
+      --plate: #1b1f26;
+      --plate-sunk: #21262f;
+      --ink: #e8ecf2;
+      --muted: #98a3b2;
+      --line: #2b323c;
+      --line-soft: #242a33;
+      --accent: #57a8ff;
+      --accent-soft: #17293f;
+      --done: #3bc08d;
+      --done-soft: #16302a;
+      --flag: #e0985f;
+      --flag-soft: #33241a;
+      --pen: #ff5c7a;
+      --pen-soft: #3a1c25;
+      --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 10px 28px rgb(0 0 0 / 30%);
+    }
+  }
+
+  :root[data-theme='dark'] {
+    --ground: #14171c;
+    --plate: #1b1f26;
+    --plate-sunk: #21262f;
+    --ink: #e8ecf2;
+    --muted: #98a3b2;
+    --line: #2b323c;
+    --line-soft: #242a33;
+    --accent: #57a8ff;
+    --accent-soft: #17293f;
+    --done: #3bc08d;
+    --done-soft: #16302a;
+    --flag: #e0985f;
+    --flag-soft: #33241a;
+    --pen: #ff5c7a;
+    --pen-soft: #3a1c25;
+    --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 10px 28px rgb(0 0 0 / 30%);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: var(--body);
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--ink);
+    background: var(--ground);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.35; margin: 0; text-wrap: balance; }
+
+  a { color: var(--accent); }
+
+  .wrap {
+    display: grid;
+    grid-template-columns: 236px minmax(0, 1fr);
+    gap: 40px;
+    max-width: 1560px;
+    margin: 0 auto;
+    padding: 40px 32px 96px;
+  }
+
+  /* ---------- rail ---------- */
+  .rail { position: sticky; top: 40px; align-self: start; display: flex; flex-direction: column; gap: 20px; max-height: calc(100vh - 80px); overflow-y: auto; }
+
+  .brand { display: flex; flex-direction: column; gap: 6px; }
+  .brand .kicker {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .brand h1 { font-size: 22px; font-weight: 900; letter-spacing: 0.01em; }
+  .brand p { margin: 0; font-size: 12.5px; line-height: 1.6; color: var(--muted); }
+
+  .meters { display: flex; flex-direction: column; gap: 12px; }
+  .meter { display: flex; flex-direction: column; gap: 6px; }
+  .meter-top { display: flex; align-items: baseline; justify-content: space-between; }
+  .meter-top span { font-size: 12px; color: var(--muted); }
+  .meter-top strong { font-family: var(--mono); font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .bar { height: 5px; overflow: hidden; background: var(--line); border-radius: 99px; }
+  .bar i { display: block; width: 0; height: 100%; border-radius: 99px; transition: width 0.25s ease; }
+  .bar i.is-approve { background: var(--accent); }
+  .bar i.is-done { background: var(--done); }
+
+  .rail nav ul { display: flex; flex-direction: column; gap: 2px; padding: 0; margin: 0; list-style: none; }
+  .rail nav a {
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: baseline;
+    padding: 7px 8px;
+    color: inherit;
+    text-decoration: none;
+    border-radius: 7px;
+  }
+  .rail nav a:hover { background: var(--plate); }
+  .rail-id { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--accent); }
+  .rail-name { font-size: 13px; }
+  .rail-count { font-family: var(--mono); font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .rail-count b { font-weight: 700; color: var(--accent); }
+  .rail-count em { font-style: normal; font-weight: 700; color: var(--done); }
+
+  .filter { display: flex; flex-direction: column; gap: 5px; padding: 0; margin: 0; border: 0; }
+  .filter legend {
+    padding: 0 0 6px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .filter label { display: flex; gap: 7px; align-items: center; font-size: 13px; cursor: pointer; }
+  .filter input { accent-color: var(--accent); width: 14px; height: 14px; }
+
+  .rail-actions { display: flex; flex-direction: column; gap: 8px; }
+  .rail-actions button {
+    padding: 7px 12px;
+    font-family: var(--body);
+    font-size: 12.5px;
+    color: var(--ink);
+    cursor: pointer;
+    background: var(--plate);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  .rail-actions button:hover { border-color: var(--accent); }
+
+  .sync {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  .sync::before {
+    flex-shrink: 0;
+    width: 7px;
+    height: 7px;
+    content: '';
+    background: var(--muted);
+    border-radius: 50%;
+  }
+  .sync[data-mode='cloud']::before { background: var(--done); }
+  .sync[data-mode='local']::before { background: var(--flag); }
+
+  .rail-note { padding-top: 14px; border-top: 1px solid var(--line); font-size: 12px; line-height: 1.65; color: var(--muted); }
+  .rail-note code { font-family: var(--mono); font-size: 11px; color: var(--ink); }
+
+  /* ---------- 撮り直しコマンド ---------- */
+  .cmdbar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 16px;
+    margin-bottom: 28px;
+    background: var(--plate);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .cmdbar[hidden] { display: none; }
+  .cmdbar-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .cmd-label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .cmd-scope { display: flex; gap: 4px; }
+  .cmd-scope button {
+    padding: 3px 10px;
+    font-family: var(--body);
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    background: var(--plate-sunk);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+  }
+  .cmd-scope button[aria-pressed='true'] { color: var(--plate); background: var(--ink); border-color: var(--ink); }
+  .cmd-scope button:disabled { opacity: 0.4; cursor: default; }
+  .cmd-copy {
+    padding: 5px 14px;
+    margin-left: auto;
+    font-family: var(--body);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--plate);
+    cursor: pointer;
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 7px;
+  }
+  .cmd-text {
+    width: 100%;
+    padding: 10px 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--ink);
+    resize: vertical;
+    background: var(--plate-sunk);
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
+  }
+  .cmd-note { margin: 0; font-size: 11.5px; line-height: 1.6; color: var(--muted); }
+
+  /* ---------- intro ---------- */
+  .intro { display: flex; flex-direction: column; gap: 20px; margin-bottom: 44px; }
+  .intro > p { max-width: 68ch; margin: 0; font-size: 15.5px; }
+
+  .routes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .route {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 18px;
+    background: var(--plate);
+    border: 1px solid var(--line-soft);
+    border-radius: 10px;
+  }
+  .route h3 { font-size: 14px; }
+  .route p { margin: 0; font-size: 13px; line-height: 1.65; color: var(--muted); }
+  .route .tag {
+    align-self: flex-start;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  /* ---------- groups ---------- */
+  .group { margin-bottom: 56px; scroll-margin-top: 24px; }
+  .group-head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: center;
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .gid { font-family: var(--display); font-size: 30px; font-weight: 900; line-height: 1; color: var(--accent); }
+  .group-head h2 { font-size: 19px; }
+  .group-head p { max-width: 72ch; margin: 2px 0 0; font-size: 13px; line-height: 1.6; color: var(--muted); }
+  .gcount { font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 22px; }
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--plate);
+    border: 1px solid var(--line-soft);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+  }
+
+  /* 上端の細い帯で 未許可 → 実装許可 → 実装済み を一目で分ける */
+  .card::before {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 1;
+    height: 3px;
+    content: '';
+    background: transparent;
+  }
+  .card[data-approved='true']::before { background: var(--accent); }
+  .card[data-done='true']::before { background: var(--done); }
+  .card[data-done='true'] { border-color: color-mix(in srgb, var(--done) 45%, var(--line-soft)); }
+  .card[hidden] { display: none; }
+
+  .shot {
+    display: block;
+    padding: 0;
+    overflow: hidden;
+    cursor: zoom-in;
+    background: var(--plate-sunk);
+    border: 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .shot img {
+    display: block;
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    object-position: top center;
+    transition: opacity 0.15s ease;
+  }
+  /*
+   * 下部固定のバーやスナックバーが主役の画面は、上端からの切り取りだと写らない。
+   * その画面だけ下端を見せる（config の anchor: 'bottom'）。
+   */
+  .shot img[data-anchor='bottom'] { object-position: bottom center; }
+  .shot:hover img { opacity: 0.88; }
+  .shot:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+  .meta { display: flex; flex: 1; flex-direction: column; gap: 10px; padding: 16px 18px 14px; }
+  .meta-head { display: flex; gap: 10px; align-items: baseline; }
+  .sid {
+    flex-shrink: 0;
+    padding: 1px 7px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 5px;
+  }
+  .meta h3 { font-size: 15px; }
+  .note { margin: 0; font-size: 13px; line-height: 1.65; color: var(--muted); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; padding: 0; margin: 0; list-style: none; }
+  .chips li {
+    padding: 2px 7px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    line-height: 1.6;
+    color: var(--muted);
+    background: var(--plate-sunk);
+    border: 1px solid var(--line-soft);
+    border-radius: 5px;
+  }
+
+  /* ---------- レビュー（コメントのスレッド） ---------- */
+  .shot-wrap { position: relative; }
+  .revtabs {
+    position: absolute;
+    z-index: 2;
+    top: 8px;
+    left: 8px;
+    display: flex;
+    gap: 4px;
+  }
+  .revtabs button {
+    padding: 2px 9px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    background: color-mix(in srgb, var(--plate) 88%, transparent);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+  }
+  .revtabs button[aria-pressed='true'] { color: var(--plate); background: var(--ink); border-color: var(--ink); }
+  .revnow { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .revnow[data-old='true'] { color: var(--flag); }
+
+  .review { display: flex; flex-direction: column; gap: 8px; margin-top: 2px; }
+  .review-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .review-head b { font-size: 12px; color: var(--ink); }
+  .review-head .is-open b { color: var(--flag); }
+  .rv-toggle {
+    padding: 2px 8px;
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--accent);
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+  }
+  .rv-toggle[hidden] { display: none; }
+
+  .threads { display: flex; flex-direction: column; gap: 6px; padding: 0; margin: 0; list-style: none; }
+  .thread {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px 10px;
+    background: var(--plate-sunk);
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
+  }
+  .thread[data-open='true'] {
+    background: var(--flag-soft);
+    border-color: color-mix(in srgb, var(--flag) 40%, var(--line));
+  }
+  .thread[data-stale='true'] { opacity: 0.78; }
+  .thread-top { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+  .badge {
+    padding: 1px 7px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    background: var(--plate);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+  }
+  .badge.is-outdated { color: #8a5a00; background: #fdf3e0; border-color: #dcae62; }
+  .badge.is-resolved { color: var(--done); background: var(--done-soft); border-color: color-mix(in srgb, var(--done) 45%, var(--line)); }
+  .badge.is-open { color: var(--flag); background: var(--plate); border-color: color-mix(in srgb, var(--flag) 45%, var(--line)); }
+  .thread-when { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .thread-acts { display: flex; gap: 4px; margin-left: auto; }
+  .thread-acts button {
+    padding: 2px 8px;
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--plate);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+  }
+  .thread-acts button:hover { color: var(--ink); border-color: var(--muted); }
+  .thread-body { margin: 0; font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
+  .thread[data-resolved='true'] .thread-body { color: var(--muted); }
+  .thread-marks { font-family: var(--mono); font-size: 10.5px; color: var(--pen); }
+
+  .rv-history { display: flex; flex-direction: column; gap: 12px; padding-top: 9px; border-top: 1px dashed var(--line); }
+  .rv-history[hidden] { display: none; }
+  .rev-block { display: flex; flex-direction: column; gap: 6px; }
+  .rev-block-head { display: flex; gap: 6px; align-items: center; }
+  .rev-block-head button {
+    padding: 1px 9px;
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--accent);
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+  }
+  .badge.is-latest { color: var(--accent); background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+  .rev-empty { margin: 0; font-size: 12px; color: var(--muted); }
+
+  .rv-new { display: flex; flex-direction: column; gap: 6px; }
+  .rv-new textarea {
+    width: 100%;
+    min-height: 58px;
+    padding: 9px 11px;
+    font-family: var(--body);
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--ink);
+    resize: vertical;
+    background: var(--plate-sunk);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  .rv-new textarea::placeholder { color: var(--muted); }
+  .rv-new textarea:focus-visible { border-color: var(--accent); outline: 2px solid var(--accent-soft); outline-offset: 0; }
+  .rv-new-foot { display: flex; gap: 8px; align-items: center; }
+  .rv-target { font-family: var(--mono); font-size: 10.5px; color: var(--muted); }
+  .rv-post {
+    padding: 5px 14px;
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--plate);
+    background: var(--ink);
+    border: 1px solid var(--ink);
+    border-radius: 7px;
+  }
+  .rv-post:disabled { opacity: 0.35; }
+
+  .card-foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    align-items: center;
+    padding-top: 12px;
+    margin-top: auto;
+    border-top: 1px solid var(--line-soft);
+  }
+  .flags { display: flex; gap: 10px; align-items: center; }
+  .flag {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    padding: 3px 9px 3px 7px;
+    font-size: 12.5px;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+  }
+  .flag input { width: 14px; height: 14px; }
+  .flag.approve input { accent-color: var(--accent); }
+  .flag.built input { accent-color: var(--done); }
+  .card[data-approved='true'] .flag.approve {
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+  }
+  .card[data-done='true'] .flag.built {
+    font-weight: 700;
+    color: var(--done);
+    background: var(--done-soft);
+    border-color: color-mix(in srgb, var(--done) 35%, var(--line));
+  }
+  .file { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .story { margin-left: auto; font-size: 12px; text-decoration: none; }
+  .story:hover { text-decoration: underline; }
+
+  /* ---------- 赤入れ ---------- */
+  .shot { position: relative; }
+  .shot .marks {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+  }
+  .mark-count {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+    padding: 2px 8px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--pen);
+    background: var(--pen-soft);
+    border-radius: 99px;
+  }
+  .mark-count[hidden] { display: none; }
+
+  .canvas-wrap { position: relative; }
+  .canvas-wrap svg.draw {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+  .canvas-wrap[data-tool='none'] svg.draw { pointer-events: none; }
+  .canvas-wrap[data-tool='pen'] svg.draw,
+  .canvas-wrap[data-tool='rect'] svg.draw { cursor: crosshair; }
+
+  .tool { display: flex; gap: 6px; align-items: center; }
+  .tool button[aria-pressed='true'] {
+    font-weight: 700;
+    color: var(--pen);
+    background: var(--pen-soft);
+    border-color: color-mix(in srgb, var(--pen) 40%, var(--line));
+  }
+
+  /* ---------- dialogs ---------- */
+  dialog {
+    width: min(1180px, 94vw);
+    max-width: none;
+    max-height: 92vh;
+    padding: 0;
+    color: var(--ink);
+    background: var(--plate);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  dialog::backdrop { background: rgb(10 12 16 / 72%); }
+  dialog.export { width: min(760px, 94vw); }
+  .lb-head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--plate);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .lb-head h3 { flex: 1; font-size: 15px; }
+  .lb-head button {
+    padding: 5px 11px;
+    font-family: var(--body);
+    font-size: 12.5px;
+    color: var(--ink);
+    cursor: pointer;
+    background: var(--plate-sunk);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+  }
+  .lb-head button:hover { border-color: var(--accent); }
+  .lb-body { padding: 16px; overflow: auto; background: var(--plate-sunk); }
+  .lb-body img { display: block; width: 100%; height: auto; border: 1px solid var(--line-soft); border-radius: 6px; }
+  .export-text {
+    width: 100%;
+    min-height: 52vh;
+    padding: 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--ink);
+    background: var(--plate);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+
+  @media (width < 900px) {
+    .wrap { grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 24px 16px 64px; }
+    .rail { position: static; max-height: none; }
+    .routes { grid-template-columns: minmax(0, 1fr); }
+    .grid { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+
+<div class="wrap">
+  <aside class="rail">
+    <div class="brand">
+      <span class="kicker">__KICKER__</span>
+      <h1>__HEADING__</h1>
+      <p>__LEAD__</p>
+    </div>
+
+    <div class="meters">
+      <div class="meter">
+        <div class="meter-top">
+          <span>__LABEL_APPROVE__</span>
+          <strong><span id="approve-count">0</span> / __TOTAL__</strong>
+        </div>
+        <div class="bar"><i class="is-approve" id="bar-approve"></i></div>
+      </div>
+      <div class="meter">
+        <div class="meter-top">
+          <span>__LABEL_DONE__</span>
+          <strong><span id="done-count">0</span> / __TOTAL__</strong>
+        </div>
+        <div class="bar"><i class="is-done" id="bar-done"></i></div>
+      </div>
+      <div class="meter-top">
+        <span>未解決コメント</span>
+        <strong><span id="comment-count">0</span> 件</strong>
+      </div>
+    </div>
+
+    <nav aria-label="画面グループ">
+      <ul>__RAIL__</ul>
+    </nav>
+
+    <fieldset class="filter">
+      <legend>表示</legend>
+      <label><input type="radio" name="filter" value="all" checked><span>すべて</span></label>
+      <label><input type="radio" name="filter" value="hide-done"><span>__F_HIDE_DONE__</span></label>
+    </fieldset>
+
+    <div class="rail-actions">
+      <button type="button" id="export-btn">コメントを書き出す</button>
+      <p class="sync" id="sync" data-mode="local">保存先を確認中</p>
+    </div>
+
+__NOTES__
+  </aside>
+
+  <main>
+    <div class="cmdbar" id="cmdbar" hidden>
+      <div class="cmdbar-head">
+        <span class="cmd-label">撮り直しコマンド</span>
+        <span class="cmd-scope">
+          <button type="button" data-scope="open" aria-pressed="true">未解決のある画面</button>
+          <button type="button" data-scope="all" aria-pressed="false">すべて</button>
+        </span>
+        <button type="button" class="cmd-copy" id="cmd-copy">コピー</button>
+      </div>
+      <textarea class="cmd-text" id="cmd-text" rows="3" readonly spellcheck="false"></textarea>
+      <p class="cmd-note" id="cmd-note"></p>
+    </div>
+__INTRO__
+    __CARDS__
+  </main>
+</div>
+
+<dialog class="lb" id="lb" aria-label="画面の拡大表示">
+  <div class="lb-head">
+    <span class="sid" id="lb-id"></span>
+    <h3 id="lb-title"></h3>
+    <span class="tool" id="lb-revs"></span>
+    <span class="tool">
+      <button type="button" data-tool="none" aria-pressed="true">表示のみ</button>
+      <button type="button" data-tool="pen" aria-pressed="false">ペン</button>
+      <button type="button" data-tool="rect" aria-pressed="false">四角</button>
+      <button type="button" id="mark-undo">1つ戻す</button>
+      <button type="button" id="mark-clear">赤入れを消す</button>
+    </span>
+    <button type="button" data-nav="-1">← 前</button>
+    <button type="button" data-nav="1">次 →</button>
+    <button type="button" id="lb-close">閉じる</button>
+  </div>
+  <div class="lb-body">
+    <div class="canvas-wrap" id="canvas-wrap" data-tool="none">
+      <img id="lb-img" alt="">
+      <svg class="draw" id="draw" preserveAspectRatio="none" aria-hidden="true"></svg>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="export" id="export" aria-label="コメントの書き出し">
+  <div class="lb-head">
+    <h3>修正コメントの書き出し</h3>
+    <button type="button" id="export-copy">コピー</button>
+    <button type="button" id="export-close">閉じる</button>
+  </div>
+  <div class="lb-body"><textarea class="export-text" id="export-text" readonly></textarea></div>
+</dialog>
+
+<script>
+  const BOARD_TITLE = __TITLE_JSON__;
+  const SHOTS = __PAYLOAD__;
+  const TITLES = __TITLES__;
+  const KEY = '__KEY__';
+  const RECAPTURE = __RECAPTURE__;
+  const PLACEHOLDER = '__PLACEHOLDER__';
+  const ids = Object.keys(SHOTS);
+  const cards = [...document.querySelectorAll('.card')];
+
+  const latestRev = (id) => SHOTS[id].rev;
+  const revEntry = (id, rev) => SHOTS[id].revs.find((r) => r.rev === rev) || SHOTS[id].revs[SHOTS[id].revs.length - 1];
+
+  // 画面ごとの状態。赤入れは版ごとに持つので、撮り直しても古い版の赤入れが新しい画像に残らない
+  const state = new Map(ids.map((id) => [id, {approved: false, done: false, marks: {}, threads: []}]));
+  const viewing = new Map(ids.map((id) => [id, latestRev(id)]));
+  const staleOpen = new Map(ids.map((id) => [id, false]));
+  let db = null;
+
+  const marksOf = (id, rev) => state.get(id).marks[rev] || [];
+  // 解決済み、または今より古い版に付いたコメントは畳む（GitHubのOutdatedと同じ扱い）
+  const isOutdated = (id, thread) => thread.rev < latestRev(id);
+  const isStale = (id, thread) => thread.resolved || isOutdated(id, thread);
+  const sortThreads = (list) => [...list].sort((a, b) => (a.createdAt < b.createdAt ? -1 : 1));
+  const newThreadId = () => 't' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  const shortDate = (iso) => {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return Number.isNaN(d.getTime()) ? '' : String(d.getMonth() + 1).padStart(2, '0') + '/' + String(d.getDate()).padStart(2, '0');
+  };
+
+  /* ---------- 保存 ---------- */
+  function readLocal() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      for (const [id, value] of Object.entries(parsed.screens ?? {})) {
+        const target = state.get(id);
+        if (!target) continue;
+        target.approved = value.approved === true;
+        target.done = value.done === true;
+        // 版を持たなかった頃の形式（marks が配列 / comment が文字列）から引き継ぐ
+        if (Array.isArray(value.marks)) target.marks = value.marks.length > 0 ? {1: value.marks} : {};
+        else target.marks = value.marks ?? {};
+        if (Array.isArray(value.threads)) target.threads = value.threads;
+        else if (typeof value.comment === 'string' && value.comment.trim() !== '') {
+          target.threads = [{id: newThreadId(), rev: 1, body: value.comment, resolved: false, createdAt: value.updatedAt ?? new Date().toISOString()}];
+        }
+      }
+    } catch { /* 壊れていたら初期状態で始める */ }
+  }
+
+  function writeLocal() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify({screens: Object.fromEntries(state)}));
+    } catch { /* 保存できない環境では記憶しない */ }
+  }
+
+  function saveScreen(id) {
+    writeLocal();
+    if (!db) return;
+    const value = state.get(id);
+    void db.doc('screens/' + id).set({
+      approved: value.approved,
+      done: value.done,
+      marks: JSON.stringify(value.marks),
+      updatedAt: new Date().toISOString(),
+    }).catch(() => { /* 書き込めなくても操作は続けられる */ });
+  }
+
+  function saveThread(id, thread) {
+    writeLocal();
+    if (!db) return;
+    void db.doc('threads/' + thread.id).set({
+      screen: id,
+      rev: thread.rev,
+      body: thread.body,
+      resolved: thread.resolved === true,
+      createdAt: thread.createdAt,
+      updatedAt: new Date().toISOString(),
+    }).catch(() => {});
+  }
+
+  function dropThread(threadId) {
+    writeLocal();
+    if (!db) return;
+    void db.doc('threads/' + threadId).delete().catch(() => {});
+  }
+
+  /* ---------- レビュー欄 ---------- */
+  const reviewParts = new Map();
+
+  function buildReview(card) {
+    const id = card.dataset.id;
+    const root = card.querySelector('[data-review]');
+    const head = document.createElement('div');
+    head.className = 'review-head';
+    const list = document.createElement('ul');
+    list.className = 'threads';
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'rv-toggle';
+    toggle.hidden = true;
+    toggle.addEventListener('click', () => {
+      staleOpen.set(id, !staleOpen.get(id));
+      paint();
+    });
+
+    const composer = document.createElement('div');
+    composer.className = 'rv-new';
+    const box = document.createElement('textarea');
+    box.rows = 2;
+    box.placeholder = PLACEHOLDER;
+    const foot = document.createElement('div');
+    foot.className = 'rv-new-foot';
+    const target = document.createElement('span');
+    target.className = 'rv-target';
+    const post = document.createElement('button');
+    post.type = 'button';
+    post.className = 'rv-post';
+    post.textContent = 'コメントする';
+    post.disabled = true;
+
+    box.addEventListener('input', () => { post.disabled = box.value.trim() === ''; });
+    post.addEventListener('click', () => {
+      const body = box.value.trim();
+      if (body === '') return;
+      const thread = {id: newThreadId(), rev: latestRev(id), body, resolved: false, createdAt: new Date().toISOString()};
+      state.get(id).threads = [...state.get(id).threads, thread];
+      box.value = '';
+      post.disabled = true;
+      saveThread(id, thread);
+      paint();
+    });
+
+    const history = document.createElement('div');
+    history.className = 'rv-history';
+    history.hidden = true;
+
+    foot.append(target, post);
+    composer.append(box, foot);
+    head.append(toggle);
+    root.append(head, list, composer, history);
+    reviewParts.set(id, {head, list, toggle, target, history});
+  }
+
+  function threadNode(id, thread) {
+    const li = document.createElement('li');
+    li.className = 'thread';
+    const outdated = isOutdated(id, thread);
+    li.dataset.resolved = String(thread.resolved === true);
+    li.dataset.open = String(!thread.resolved && !outdated);
+    li.dataset.stale = String(isStale(id, thread));
+
+    const top = document.createElement('div');
+    top.className = 'thread-top';
+    const rev = document.createElement('span');
+    rev.className = 'badge';
+    rev.textContent = 'v' + thread.rev;
+    top.append(rev);
+    if (outdated) {
+      const chip = document.createElement('span');
+      chip.className = 'badge is-outdated';
+      chip.textContent = 'Outdated';
+      chip.title = 'この指摘のあと画面が変わっています';
+      top.append(chip);
+    }
+    const status = document.createElement('span');
+    status.className = 'badge ' + (thread.resolved ? 'is-resolved' : 'is-open');
+    status.textContent = thread.resolved ? '解決済み' : '未解決';
+    top.append(status);
+    const when = document.createElement('span');
+    when.className = 'thread-when';
+    when.textContent = shortDate(thread.createdAt);
+    top.append(when);
+
+    const acts = document.createElement('div');
+    acts.className = 'thread-acts';
+    const resolve = document.createElement('button');
+    resolve.type = 'button';
+    resolve.textContent = thread.resolved ? '未解決に戻す' : '解決';
+    resolve.addEventListener('click', () => {
+      thread.resolved = !thread.resolved;
+      saveThread(id, thread);
+      paint();
+    });
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.textContent = '削除';
+    remove.addEventListener('click', () => {
+      state.get(id).threads = state.get(id).threads.filter((t) => t.id !== thread.id);
+      dropThread(thread.id);
+      paint();
+    });
+    acts.append(resolve, remove);
+    top.append(acts);
+
+    const body = document.createElement('p');
+    body.className = 'thread-body';
+    body.textContent = thread.body;
+
+    li.append(top, body);
+    return li;
+  }
+
+  function renderReview(id) {
+    const parts = reviewParts.get(id);
+    if (!parts) return;
+    const threads = sortThreads(state.get(id).threads);
+    const current = latestRev(id);
+    // 最新版に付いた未解決だけを「いま見るべき指摘」として出す。
+    // 画面を直して版が上がると、それ以前の指摘は履歴に送られてレビュー面がまっさらになる
+    const live = threads.filter((t) => t.rev === current && !t.resolved);
+    const past = threads.filter((t) => !(t.rev === current && !t.resolved));
+
+    parts.head.textContent = '';
+    const openBadge = document.createElement('span');
+    openBadge.className = live.length > 0 ? 'is-open' : '';
+    openBadge.innerHTML = '未解決 <b>' + live.length + '</b>';
+    parts.head.append(openBadge);
+    if (past.length > 0) {
+      const pastBadge = document.createElement('span');
+      pastBadge.innerHTML = 'これまでの指摘 <b>' + past.length + '</b>';
+      parts.head.append(pastBadge);
+    }
+
+    parts.head.append(parts.toggle);
+    parts.toggle.hidden = past.length === 0 && SHOTS[id].revs.length < 2;
+    parts.toggle.textContent = staleOpen.get(id) ? '履歴を閉じる' : '修正の履歴を見る';
+
+    parts.list.textContent = '';
+    for (const thread of live) parts.list.append(threadNode(id, thread));
+
+    parts.history.textContent = '';
+    parts.history.hidden = !staleOpen.get(id);
+    if (staleOpen.get(id)) {
+      for (const rev of [...SHOTS[id].revs].reverse()) {
+        const block = document.createElement('div');
+        block.className = 'rev-block';
+
+        const blockHead = document.createElement('div');
+        blockHead.className = 'rev-block-head';
+        const label = document.createElement('span');
+        label.className = 'badge' + (rev.rev === current ? ' is-latest' : '');
+        label.textContent = 'v' + rev.rev + (rev.rev === current ? '（最新）' : '');
+        blockHead.append(label);
+        if (rev.at) {
+          const when = document.createElement('span');
+          when.className = 'thread-when';
+          when.textContent = shortDate(rev.at) + ' 撮影';
+          blockHead.append(when);
+        }
+
+        const view = document.createElement('button');
+        view.type = 'button';
+        view.textContent = 'この版を見る';
+        view.addEventListener('click', () => { viewing.set(id, rev.rev); paint(); });
+        blockHead.append(view);
+        block.append(blockHead);
+
+        const inRev = past.filter((t) => t.rev === rev.rev);
+        const marks = marksOf(id, rev.rev).length;
+        if (inRev.length === 0 && marks === 0) {
+          const empty = document.createElement('p');
+          empty.className = 'rev-empty';
+          empty.textContent = 'この版への指摘はありません。';
+          block.append(empty);
+        } else {
+          const ul = document.createElement('ul');
+          ul.className = 'threads';
+          for (const thread of inRev) ul.append(threadNode(id, thread));
+          block.append(ul);
+          if (marks > 0) {
+            const note = document.createElement('span');
+            note.className = 'thread-marks';
+            note.textContent = '赤入れ ' + marks + '箇所';
+            block.append(note);
+          }
+        }
+
+        parts.history.append(block);
+      }
+    }
+
+    parts.target.textContent = 'v' + current + '（最新版）へのコメント';
+  }
+
+  /* ---------- 描画 ---------- */
+  function applyFilter() {
+    const mode = document.querySelector('input[name="filter"]:checked').value;
+    for (const card of cards) {
+      // 作り終えた画面を伏せて、残っている画面だけを見る
+      card.hidden = mode === 'hide-done' && state.get(card.dataset.id).done;
+    }
+  }
+
+  function paint() {
+    let approved = 0;
+    let done = 0;
+    let openTotal = 0;
+
+    for (const card of cards) {
+      const id = card.dataset.id;
+      const value = state.get(id);
+      if (value.approved) approved += 1;
+      if (value.done) done += 1;
+      const open = value.threads.filter((t) => t.rev === latestRev(id) && !t.resolved).length;
+      openTotal += open;
+
+      card.dataset.approved = String(value.approved);
+      card.dataset.done = String(value.done);
+      card.dataset.commented = String(open > 0);
+      card.querySelector('[data-approve]').checked = value.approved;
+      card.querySelector('[data-done]').checked = value.done;
+
+      const rev = viewing.get(id);
+      const entry = revEntry(id, rev);
+      const img = card.querySelector('[data-thumb]');
+      if (img.dataset.rev !== String(entry.rev)) {
+        img.src = entry.src;
+        img.dataset.rev = String(entry.rev);
+      }
+
+      const svg = card.querySelector('[data-marks]');
+      svg.setAttribute('viewBox', '0 0 1000 ' + entry.h);
+      svg.innerHTML = marksToSvg(marksOf(id, entry.rev));
+
+      const chip = card.querySelector('[data-mark-count]');
+      const markCount = marksOf(id, entry.rev).length;
+      chip.hidden = markCount === 0;
+      chip.textContent = '赤入れ ' + markCount;
+
+      const tabs = card.querySelector('[data-revtabs]');
+      if (tabs) {
+        for (const button of tabs.children) button.setAttribute('aria-pressed', String(Number(button.dataset.rev) === entry.rev));
+      }
+
+      const now = card.querySelector('[data-revnow]');
+      const isOld = entry.rev !== latestRev(id);
+      now.textContent = SHOTS[id].revs.length > 1 ? (isOld ? 'v' + entry.rev + '（古い版）' : 'v' + entry.rev + ' 最新') : '';
+      now.dataset.old = String(isOld);
+
+      renderReview(id);
+    }
+
+    document.getElementById('approve-count').textContent = approved;
+    document.getElementById('done-count').textContent = done;
+    document.getElementById('comment-count').textContent = openTotal;
+    document.getElementById('bar-approve').style.width = (approved / ids.length) * 100 + '%';
+    document.getElementById('bar-done').style.width = (done / ids.length) * 100 + '%';
+
+    for (const el of document.querySelectorAll('[data-group-count]')) {
+      const g = el.dataset.groupCount;
+      const inGroup = cards.filter((c) => c.dataset.group === g);
+      const a = inGroup.filter((c) => state.get(c.dataset.id).approved).length;
+      const d = inGroup.filter((c) => state.get(c.dataset.id).done).length;
+      el.innerHTML = '<b>' + a + '</b>·<em>' + d + '</em>/' + inGroup.length;
+    }
+
+    applyFilter();
+    renderCommand();
+  }
+
+  /* ---------- 操作 ---------- */
+  for (const card of cards) buildReview(card);
+
+  for (const tabs of document.querySelectorAll('[data-revtabs]')) {
+    const id = tabs.dataset.revtabs;
+    for (const button of tabs.children) {
+      button.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        viewing.set(id, Number(button.dataset.rev));
+        paint();
+      });
+    }
+  }
+
+  for (const box of document.querySelectorAll('[data-approve]')) {
+    box.addEventListener('change', () => {
+      const id = box.dataset.approve;
+      const value = state.get(id);
+      value.approved = box.checked;
+      if (!box.checked) value.done = false;
+      saveScreen(id);
+      paint();
+    });
+  }
+
+  for (const box of document.querySelectorAll('[data-done]')) {
+    box.addEventListener('change', () => {
+      const id = box.dataset.done;
+      const value = state.get(id);
+      value.done = box.checked;
+      // 実装済みにしたら許可も立てる（許可なしで作り終えた状態は残さない）
+      if (box.checked) value.approved = true;
+      saveScreen(id);
+      paint();
+    });
+  }
+
+  for (const radio of document.querySelectorAll('input[name="filter"]')) {
+    radio.addEventListener('change', applyFilter);
+  }
+
+  /* ---------- 撮り直しコマンド ---------- */
+  // 直したい画面が決まったら、その画面だけ撮り直すコマンドをそのまま渡せるようにする
+  const cmdbar = document.getElementById('cmdbar');
+  const cmdText = document.getElementById('cmd-text');
+  const cmdNote = document.getElementById('cmd-note');
+  const cmdCopy = document.getElementById('cmd-copy');
+  let cmdScope = 'open';
+  let cmdScopeChosen = false;
+
+  const screensWithOpen = () =>
+    ids.filter((id) => state.get(id).threads.some((t) => t.rev === latestRev(id) && !t.resolved));
+
+  function buildCommand(targets) {
+    if (!RECAPTURE) return '';
+    const only = targets && targets.length > 0 && targets.length < ids.length ? ' --only ' + targets.join(',') : '';
+    return [
+      'cd ' + RECAPTURE.cwd,
+      'node ' + RECAPTURE.scripts + '/capture.mjs ' + RECAPTURE.config + only,
+      'node ' + RECAPTURE.scripts + '/build-board.mjs ' + RECAPTURE.config,
+    ].join(' \\\n  && ');
+  }
+
+  function renderCommand() {
+    if (!RECAPTURE) return;
+    cmdbar.hidden = false;
+    const open = screensWithOpen();
+    const openButton = cmdbar.querySelector('[data-scope="open"]');
+    openButton.disabled = open.length === 0;
+    // 自分で選ぶまでは、未解決があればその画面だけ、無ければ全画面にしておく
+    if (!cmdScopeChosen) cmdScope = open.length > 0 ? 'open' : 'all';
+    for (const button of cmdbar.querySelectorAll('[data-scope]')) {
+      button.setAttribute('aria-pressed', String(button.dataset.scope === cmdScope));
+    }
+
+    const targets = cmdScope === 'open' ? open : [];
+    cmdText.value = buildCommand(targets);
+    cmdNote.textContent = cmdScope === 'open'
+      ? '未解決コメントがある' + open.length + '画面だけ撮り直します（' + open.join('・') + '）。撮った画像が前の版と変われば版が上がり、その画面の古い指摘は履歴に移ります。'
+      : '全' + ids.length + '画面を撮り直します。画像が変わらなかった画面は版が増えず、コメントもそのまま残ります。';
+  }
+
+  for (const button of cmdbar.querySelectorAll('[data-scope]')) {
+    button.addEventListener('click', () => {
+      cmdScope = button.dataset.scope;
+      cmdScopeChosen = true;
+      renderCommand();
+    });
+  }
+
+  cmdCopy.addEventListener('click', async () => {
+    cmdText.select();
+    try {
+      await navigator.clipboard.writeText(cmdText.value);
+      cmdCopy.textContent = 'コピーしました';
+      setTimeout(() => { cmdCopy.textContent = 'コピー'; }, 2000);
+    } catch {
+      // クリップボードが使えない環境では選択状態のままにして手でコピーしてもらう
+      cmdCopy.textContent = '選択しました';
+      setTimeout(() => { cmdCopy.textContent = 'コピー'; }, 2000);
+    }
+  });
+
+  /* ---------- 書き出し ---------- */
+  const exportDialog = document.getElementById('export');
+  document.getElementById('export-btn').addEventListener('click', () => {
+    const lines = ['# ' + BOARD_TITLE + ' レビュー', ''];
+    for (const id of ids) {
+      const threads = sortThreads(state.get(id).threads);
+      const marks = Object.entries(state.get(id).marks).filter(([, list]) => list.length > 0);
+      if (threads.length === 0 && marks.length === 0) continue;
+      lines.push('## ' + id + ' ' + TITLES[id] + '（最新 v' + latestRev(id) + '）');
+      for (const thread of threads) {
+        const tags = ['v' + thread.rev, thread.resolved ? '解決済み' : '未解決'];
+        if (isOutdated(id, thread)) tags.push('Outdated');
+        lines.push('- [' + tags.join(' / ') + '] ' + thread.body.replace(/\n/g, '\n  '));
+      }
+      for (const [rev, list] of marks) lines.push('- （v' + rev + 'の画像に赤入れ ' + list.length + '箇所）');
+      lines.push('');
+    }
+
+    if (lines.length === 2) lines.push('（コメントはまだありません）');
+    document.getElementById('export-text').value = lines.join('\n');
+    exportDialog.showModal();
+  });
+  document.getElementById('export-copy').addEventListener('click', async () => {
+    const text = document.getElementById('export-text');
+    text.select();
+    try {
+      await navigator.clipboard.writeText(text.value);
+      document.getElementById('export-copy').textContent = 'コピーしました';
+      setTimeout(() => { document.getElementById('export-copy').textContent = 'コピー'; }, 2000);
+    } catch { /* クリップボードが使えない場合は選択状態のまま手動でコピーしてもらう */ }
+  });
+  document.getElementById('export-close').addEventListener('click', () => { exportDialog.close(); });
+
+  /* ---------- 赤入れ ---------- */
+  // 赤入れは幅1000の座標系で持つ。画像の実寸に依存しないので拡大表示とサムネイルで同じデータを使える
+  function marksToSvg(marks) {
+    return marks
+      .map((mark) => {
+        if (mark.t === 'r') {
+          return '<rect x="' + mark.x + '" y="' + mark.y + '" width="' + mark.w + '" height="' + mark.h +
+            '" fill="none" stroke="#e11d48" stroke-width="5" rx="4"></rect>';
+        }
+
+        const d = mark.d.map((point, index) => (index === 0 ? 'M' : 'L') + point[0] + ' ' + point[1]).join(' ');
+        return '<path d="' + d + '" fill="none" stroke="#e11d48" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path>';
+      })
+      .join('');
+  }
+
+  const wrap = document.getElementById('canvas-wrap');
+  const draw = document.getElementById('draw');
+  let tool = 'none';
+  let drawing = null;
+  let current = 0;
+  let currentRev = 1;
+
+  const toolButtons = [...document.querySelectorAll('.tool button[data-tool]')];
+  for (const btn of toolButtons) {
+    btn.addEventListener('click', () => {
+      tool = btn.dataset.tool;
+      wrap.dataset.tool = tool;
+      for (const other of toolButtons) other.setAttribute('aria-pressed', String(other === btn));
+    });
+  }
+
+  function toPoint(event) {
+    const rect = draw.getBoundingClientRect();
+    const height = revEntry(ids[current], currentRev).h;
+    return [
+      Math.round(((event.clientX - rect.left) / rect.width) * 1000),
+      Math.round(((event.clientY - rect.top) / rect.height) * height),
+    ];
+  }
+
+  function renderDraw() {
+    const marks = marksOf(ids[current], currentRev);
+    draw.innerHTML = marksToSvg(drawing ? [...marks, drawing] : marks);
+  }
+
+  draw.addEventListener('pointerdown', (event) => {
+    if (tool === 'none') return;
+    const point = toPoint(event);
+    drawing = tool === 'pen'
+      ? {t: 'p', d: [point]}
+      : {t: 'r', x: point[0], y: point[1], w: 0, h: 0, ox: point[0], oy: point[1]};
+    draw.setPointerCapture(event.pointerId);
+    renderDraw();
+  });
+
+  draw.addEventListener('pointermove', (event) => {
+    if (!drawing) return;
+    const point = toPoint(event);
+    if (drawing.t === 'p') {
+      const last = drawing.d[drawing.d.length - 1];
+      // 細かすぎる点は捨てて、保存するデータを小さく保つ
+      if (Math.abs(point[0] - last[0]) + Math.abs(point[1] - last[1]) < 6) return;
+      if (drawing.d.length > 400) return;
+      drawing.d.push(point);
+    } else {
+      drawing.x = Math.min(drawing.ox, point[0]);
+      drawing.y = Math.min(drawing.oy, point[1]);
+      drawing.w = Math.abs(point[0] - drawing.ox);
+      drawing.h = Math.abs(point[1] - drawing.oy);
+    }
+
+    renderDraw();
+  });
+
+  function endDrawing() {
+    if (!drawing) return;
+    const id = ids[current];
+    const isTooSmall = drawing.t === 'r' ? drawing.w < 8 && drawing.h < 8 : drawing.d.length < 2;
+    if (!isTooSmall) {
+      if (drawing.t === 'r') { delete drawing.ox; delete drawing.oy; }
+      state.get(id).marks[currentRev] = [...marksOf(id, currentRev), drawing];
+      saveScreen(id);
+    }
+
+    drawing = null;
+    renderDraw();
+    paint();
+  }
+
+  draw.addEventListener('pointerup', endDrawing);
+  draw.addEventListener('pointercancel', endDrawing);
+  draw.addEventListener('pointerleave', endDrawing);
+
+  document.getElementById('mark-undo').addEventListener('click', () => {
+    const id = ids[current];
+    const marks = marksOf(id, currentRev);
+    if (marks.length === 0) return;
+    state.get(id).marks[currentRev] = marks.slice(0, -1);
+    saveScreen(id);
+    renderDraw();
+    paint();
+  });
+
+  document.getElementById('mark-clear').addEventListener('click', () => {
+    const id = ids[current];
+    if (marksOf(id, currentRev).length === 0) return;
+    state.get(id).marks[currentRev] = [];
+    saveScreen(id);
+    renderDraw();
+    paint();
+  });
+
+  /* ---------- 拡大表示 ---------- */
+  const lb = document.getElementById('lb');
+  const lbRevs = document.getElementById('lb-revs');
+
+  function show(id, rev) {
+    current = ids.indexOf(id);
+    currentRev = rev ?? viewing.get(id);
+    const entry = revEntry(id, currentRev);
+    currentRev = entry.rev;
+    viewing.set(id, currentRev);
+    document.getElementById('lb-id').textContent = id + ' · v' + currentRev + (currentRev === latestRev(id) ? '' : '（古い版）');
+    document.getElementById('lb-title').textContent = SHOTS[id].title;
+    const img = document.getElementById('lb-img');
+    img.src = entry.src;
+    img.alt = SHOTS[id].title;
+    draw.setAttribute('viewBox', '0 0 1000 ' + entry.h);
+    drawing = null;
+    renderDraw();
+
+    lbRevs.textContent = '';
+    if (SHOTS[id].revs.length > 1) {
+      for (const r of SHOTS[id].revs) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = 'v' + r.rev;
+        button.setAttribute('aria-pressed', String(r.rev === currentRev));
+        button.addEventListener('click', () => { show(id, r.rev); paint(); });
+        lbRevs.append(button);
+      }
+    }
+
+    lb.querySelector('.lb-body').scrollTop = 0;
+    if (!lb.open) lb.showModal();
+  }
+
+  for (const btn of document.querySelectorAll('[data-open]')) {
+    btn.addEventListener('click', () => { show(btn.dataset.open); });
+  }
+  for (const btn of lb.querySelectorAll('[data-nav]')) {
+    btn.addEventListener('click', () => {
+      const next = (current + Number(btn.dataset.nav) + ids.length) % ids.length;
+      show(ids[next]);
+    });
+  }
+  document.getElementById('lb-close').addEventListener('click', () => { lb.close(); });
+  lb.addEventListener('click', (event) => { if (event.target === lb) lb.close(); });
+  document.addEventListener('keydown', (event) => {
+    if (!lb.open) return;
+    if (event.key === 'ArrowRight') show(ids[(current + 1) % ids.length]);
+    if (event.key === 'ArrowLeft') show(ids[(current - 1 + ids.length) % ids.length]);
+  });
+
+  /* ---------- 起動 ---------- */
+  readLocal();
+  paint();
+
+  const sync = document.getElementById('sync');
+  sync.textContent = 'このブラウザにのみ保存';
+
+  void (async () => {
+    const namespace = await window.claude?.use?.('db');
+    if (!namespace) return;
+    db = namespace;
+    sync.dataset.mode = 'cloud';
+    sync.textContent = '共有の保存先に同期中';
+
+    db.collection('screens').onSnapshot(
+      (snapshot) => {
+        for (const document_ of snapshot.docs) {
+          const value = state.get(document_.id);
+          if (!value) continue;
+          const data = document_.data() ?? {};
+          value.approved = data.approved === true;
+          value.done = data.done === true;
+          try {
+            const parsed = typeof data.marks === 'string' ? JSON.parse(data.marks) : {};
+            value.marks = Array.isArray(parsed) ? (parsed.length > 0 ? {1: parsed} : {}) : (parsed ?? {});
+          } catch {
+            value.marks = {};
+          }
+        }
+
+        writeLocal();
+        paint();
+      },
+      () => {
+        sync.dataset.mode = 'local';
+        sync.textContent = '同期できないため、このブラウザに保存';
+      },
+    );
+
+    db.collection('threads').onSnapshot(
+      (snapshot) => {
+        const byScreen = new Map(ids.map((id) => [id, []]));
+        for (const document_ of snapshot.docs) {
+          const data = document_.data() ?? {};
+          const list = byScreen.get(data.screen);
+          if (!list) continue;
+          list.push({
+            id: document_.id,
+            rev: Number(data.rev) || 1,
+            body: typeof data.body === 'string' ? data.body : '',
+            resolved: data.resolved === true,
+            createdAt: data.createdAt ?? new Date().toISOString(),
+          });
+        }
+
+        for (const [id, list] of byScreen) state.get(id).threads = sortThreads(list);
+        writeLocal();
+        paint();
+      },
+      () => { /* スレッドが読めなくても他は動く */ },
+    );
+  })();
+</script>
